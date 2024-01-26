@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+{% block title %} XLink | Change Password {% endblock title %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-lg">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">Change Password</h2>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger{% endif %} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form class="needs-validation" method="post" action="{% url 'change-password' %}">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <label for="old_password" class="form-label">Old Password:</label>
+                            <input type="password" class="form-control" id="old_password" name="old_password" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password1" class="form-label">New Password:</label>
+                            <input type="password" class="form-control" id="new_password1" name="new_password1" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="new_password2" class="form-label">Confirm New Password:</label>
+                            <input type="password" class="form-control" id="new_password2" name="new_password2" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Change Password</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="mt-4">
+                <a class="btn btn-danger" onclick="toggleDeleteAccountForm()">Delete my account</a>
+            </div>
+            <form class="mt-3" id="deleteAccountForm" method="post" action="/user/delete-account" style="display: none;">
+            {% csrf_token %}
+                <h3>Enter your password to delete your account </h3>
+                <div class="input-group mb-3">
+                    <input type="password" class="form-control" placeholder="Enter password" name="password">
+                    <button type="submit" class="btn btn-danger">Confirm Delete</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleDeleteAccountForm() {
+        const commentForm = document.getElementById('deleteAccountForm');
+        commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+    }
+</script>
+{% endblock content %}
