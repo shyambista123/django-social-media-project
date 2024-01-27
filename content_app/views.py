@@ -86,26 +86,31 @@ def like(request, post_id):
     return redirect('post-details',post_id=post.id)
 
 @login_required(login_url='/user/login/')
-def user_profile(request,username):
+def user_profile(request, username):
     '''Get the user by username'''
-    user = get_object_or_404(CustomUser,username=username)
+    user = get_object_or_404(CustomUser, username=username)
 
-    '''Get all post of that user'''
+    '''Get all posts of that user'''
     posts = Post.objects.filter(user=user).order_by('-date_posted')
 
-    '''check if the currently logged in user have folloed the user'''
+    '''Check if the currently logged-in user is following the user'''
     is_following = request.user.is_following(user)
-
-    '''Count followers'''
-    followers_count = user.followers_count()
-
-    '''Counts followings'''
-    following_count = user.followings_count()
     
-    context = {'users': user, 'username': username, 'posts': posts, 'is_following': is_following,
-               'followers_count': followers_count, 'following_count': following_count}
+    '''Count followers and followings'''
+    followers_count = user.get_followers_count()
+    following_count = user.get_following_count()
 
-    return render(request,'user-profile.html',context)
+    context = {
+        'users': user,
+        'username': username,
+        'posts': posts,
+        'is_following': is_following,
+        'followers_count': followers_count,
+        'following_count': following_count
+    }
+
+    return render(request, 'user-profile.html', context)
+
 
 
 @login_required(login_url='/user/login/')
@@ -147,7 +152,7 @@ def delete_comment(request, comment_id):
 @login_required(login_url='/user/login')
 def follow(request, username):
     if request.method == 'POST':
-        '''Get user by username and follow'''
+        '''Get user_to_follow by username and follow'''
         user_to_follow = get_object_or_404(CustomUser, username=username)
         request.user.follow(user_to_follow)
     return redirect('user-profile', username=username)
@@ -155,7 +160,7 @@ def follow(request, username):
 @login_required(login_url='/user/login')
 def unfollow(request, username):
     if request.method == 'POST':
-        '''Get user by username and unfollow'''
+        '''Get user_to_unfollow by username and unfollow'''
         user_to_unfollow = get_object_or_404(CustomUser, username=username)
         request.user.unfollow(user_to_unfollow)
     return redirect('user-profile', username=username)
