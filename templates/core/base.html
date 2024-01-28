@@ -17,7 +17,7 @@
                     <svg class="bi me-2" width="40" height="37" role="img" aria-label="Bootstrap">
                         <use xlink:href="#bootstrap"></use>
                     </svg>
-                    <img src="{% static 'images/xlink.jpg' %}" width="45" height="45" class="rounded-circle"  alt="XLink"/>
+                    <img src="{% static 'images/xlink.jpg' %}" width="50" height="50" class="rounded-circle"  alt="XLink"/>
                 </a>
 
                 <div class="d-flex ms-auto mx-3">
@@ -29,8 +29,8 @@
                     <a href="#" class="d-block link-dark text-decoration-none" id="dropdownUser1"
                         data-bs-toggle="dropdown" aria-expanded="false">
                         {% if user.profile_image %}
-                        <img src="{{ user.profile_image.url }}" alt="{{ user.username }}'s profile image" width="40"
-                            height="40" class="rounded-circle" />
+                        <img src="{{ user.profile_image.url }}" alt="{{ user.username }}'s profile image" width="50"
+                            height="50" class="rounded-circle" />
                         {% else %}
                         <img src="{% static 'images/default_profile.jpg' %}" alt="{{ user.username }}'s profile image"
                             width="32" height="32" class="rounded-circle" />

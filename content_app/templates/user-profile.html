@@ -12,7 +12,7 @@
             <img src="{% if users.profile_image %}{{ users.profile_image.url }}{% else %}{% static 'images/default_profile.jpg' %}{% endif %}"
             alt="{{ users.username }}'s profile image"
             class="rounded-circle profile-img border border-white img-fluid"
-            style="width: 140px; height: 140px;"/>
+            style="width: 200px; height: 200px;"/>
   
             <h5 class="card-title mt-3">
               {{ users.first_name|title }} {{ users.last_name|title }}
