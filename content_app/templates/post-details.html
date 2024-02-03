@@ -13,11 +13,16 @@
             {% else %}
             <img src="{% static '/images/default_profile.jpg' %}" width="50" height="50" class="rounded-circle" />
             {% endif %}
-            {% if post.user == request.user %}
-            <a class="text-decoration-none text-dark fw-bolder" href="{% url 'user-profile' user.username %}">{{post.user.first_name|title }} {{ post.user.last_name|title }}</a>
+            {% if post.user.first_name or post.user.last_name %}
+            <a class="text-decoration-none text-dark fw-bolder" href="{% url 'user-profile' post.user.username %}">
+                {{ post.user.get_full_name | title }}
+            </a>
             {% else %}
-            <a class="text-decoration-none text-dark fw-bolder" href="{% url 'user-profile' post.user.username %}">{{post.user.first_name|title }} {{ post.user.last_name|title }}</a>
+                <a class="text-decoration-none text-dark fw-bolder" href="{% url 'user-profile' post.user.username %}">
+                    {{ post.user.username }}
+                </a>
             {% endif %}
+
             <br />
             <small>Posted {{ post.date_posted | timesince }} ago</small>
           </div>
@@ -104,10 +109,15 @@
               {% else %}
               <img src="{% static '/images/default_profile.jpg' %}" width="30" height="30" class="rounded-circle" />
               {% endif %}
-              <strong>{{ comment.user.get_full_name }}</strong><br />
+              {% if comment.user.first_name or comment.user.last_name %}
+                  <strong>{{ comment.user.get_full_name }}</strong><br />
+              {% else %}
+                  {{ comment.user.username }}<br />
+              {% endif %}
+
               {{ comment.text }}
               <br />
-              <small>{{ comment.created_at }}</small>
+              <small>Commented {{ comment.created_at | timesince }} ago</small>
             </div>
             {% if comment.user == request.user or comment.post.user == request.user %}
             <a href="{% url 'delete-comment' comment.id %}" class="btn btn-link text-danger ml-auto"

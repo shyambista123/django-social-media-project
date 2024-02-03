@@ -22,8 +22,14 @@
                 {% else %}
                   <img src="{% static '/images/default_profile.jpg' %}" width="50" height="50" class="rounded-circle" />
                 {% endif %}
-                <a class="text-decoration-none text-dark fw-bolder" href="{% url 'user-profile' post.user.username %}">{{ post.user.first_name|title }} {{ post.user.last_name|title }}</a>
-                <br>
+                <a class="text-decoration-none text-dark fw-bolder" href="{% url 'user-profile' post.user.username %}">
+                  {% if post.user.first_name or post.user.last_name %}
+                      {{ post.user.get_full_name|title }}
+                  {% else %}
+                      {{ post.user.username }}
+                  {% endif %}
+              </a>
+               <br>
                 <small>Posted {{ post.date_posted | timesince }} ago</small>
               </div>
               {% if post.user == request.user %}

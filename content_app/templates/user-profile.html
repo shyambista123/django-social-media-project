@@ -76,9 +76,13 @@
                 class="rounded-circle"
               />
             {% endif %}
+            {% if post.user.first_name or post.user.last_name %}
             <a href="#" class="fw-bolder text-decoration-none text-dark">
-              {{ post.user.first_name|title }} {{ post.user.last_name|title }}
+              {{ post.user.get_full_name|title }}
             </a>
+            {% else %}
+            {{ post.user.username|title }}
+            {% endif %}
             <small>Posted {{ post.date_posted | timesince }} ago</small>
           </div>
 

@@ -123,7 +123,6 @@ def edit_profile(request):
     if request.method == 'POST':
         user.first_name = request.POST['first_name']
         user.last_name = request.POST['last_name']
-        user.username = request.POST['username']
         user.bio = request.POST['bio']
         user.profile_image = request.FILES.get('profile_image', user.profile_image)
         user.save()

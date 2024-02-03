@@ -39,9 +39,13 @@
                         {% if user.is_authenticated %}
                         <p class="dropdown-item text-dark disabled">
                             <span style="font-family: system-ui, Ubuntu, sans-serif">
-                                {{ user.first_name|title }} {{ user.last_name|title }}
+                                {% if user.first_name or user.last_name %}
+                                    {{ user.get_full_name|title }}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
                             </span>
-                        </p>
+                        </p>                        
                         {% endif %}
                         <li data-bs-toggle="modal" data-bs-target="#postModal"><a class="dropdown-item" href="#">New
                                 post</a></li>
