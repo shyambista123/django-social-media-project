@@ -1,0 +1,139 @@
+{% extends 'core/base.html' %} 
+{% block title %} XLink | Post {% endblock title%} 
+{% load static %} 
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-7 mx-auto">
+      <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <div>
+            {% if post.user.profile_image %}
+            <img src="{{ post.user.profile_image.url }}" width="50" height="50" class="rounded-circle" />
+            {% else %}
+            <img src="{% static '/images/default_profile.jpg' %}" width="50" height="50" class="rounded-circle" />
+            {% endif %}
+            {% if post.user.first_name or post.user.last_name %}
+            <a class="text-decoration-none text-dark fw-bolder" href="{% url 'user-profile' post.user.username %}">
+                {{ post.user.get_full_name | title }}
+            </a>
+            {% else %}
+                <a class="text-decoration-none text-dark fw-bolder" href="{% url 'user-profile' post.user.username %}">
+                    {{ post.user.username }}
+                </a>
+            {% endif %}
+
+            <br />
+            <small>Posted {{ post.date_posted | timesince }} ago</small>
+          </div>
+          {% if post.user == request.user %}
+          <div class="dropdown">
+            <button class="btn btn-link" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li>
+                <a class="dropdown-item" href="{% url 'edit-post' post.user.username post.id %}">Edit Post</a>
+              </li>
+              <li>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deletePostModal">Delete Post</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="modal" tabindex="-1" role="dialog" id="deletePostModal">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title">Confirm Deletion</h5>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <p>Are you sure you want to delete this post?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Cancel
+                  </button>
+                  <a class="btn btn-danger" href="{% url 'delete-post' post.id %}">Delete</a>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+
+        <div class="card-body">
+          <h5 class="card-title">{{ post.caption }}</h5>
+        </div>
+        {% if post.image %}
+        <div style="position: relative; width: 100%; height: 0; padding-bottom: 75%;">
+          <img src="{{ post.image.url }}" style="position: absolute; width: 100%; height: 100%; object-fit: cover;"
+            class="card-img-top img-fluid" alt="Social Media Post Image" />
+        </div>
+        {% endif %}
+        <div class="card-body">
+          <a href="{% url 'like' post.id %}" class="text-decoration-none">
+            {% if user in post.likes.all %}
+            <i class="fa-solid fa-heart fa-2x text-dark"></i>
+            {% else %}
+            <i class="fa-regular fa-heart fa-2x text-dark"></i>
+            {% endif %}
+          </a>
+
+          <a class="mx-5 text-dark" href="#"><i class="fa-regular fa-comment-dots fa-2x"></i></a>
+          <br />
+          <small>{{post.no_of_likes}} Likes</small>
+          <small class="m-3">{{ post.no_of_comments }} Comments </small>
+
+        </div>
+
+        <form id="commentForm{{ post.id }}" method="post" action="{% url 'comment' post.id %}">
+          {% csrf_token %}
+          <div class="input-group mb-3">
+            <input type="text" class="form-control rounded-pill m-2" placeholder="Add a comment..." name="comment" />
+            <button class="btn btn-outline-primary rounded-pill m-2" type="submit">
+              Post
+            </button>
+          </div>
+        </form>
+
+        <h4 class="m-3">Comments</h4>
+        <div class="card-body">
+          {% if comments %}
+          {% for comment in comments %}
+          <div class="mb-2 d-flex align-items-center justify-content-between">
+            <div>
+              {% if comment.user.profile_image %}
+              <img src="{{ comment.user.profile_image.url }}" width="30" height="30" class="rounded-circle" />
+              {% else %}
+              <img src="{% static '/images/default_profile.jpg' %}" width="30" height="30" class="rounded-circle" />
+              {% endif %}
+              {% if comment.user.first_name or comment.user.last_name %}
+                  <strong>{{ comment.user.get_full_name }}</strong><br />
+              {% else %}
+                  {{ comment.user.username }}<br />
+              {% endif %}
+
+              {{ comment.text }}
+              <br />
+              <small>Commented {{ comment.created_at | timesince }} ago</small>
+            </div>
+            {% if comment.user == request.user or comment.post.user == request.user %}
+            <a href="{% url 'delete-comment' comment.id %}" class="btn btn-link text-danger ml-auto"
+              onclick="return confirm('Are you sure you want to delete this comment?');">
+              <i class="fas fa-trash-alt"></i>
+            </a>
+            {% endif %}
+          </div>
+          {% endfor %}
+          {% else %}
+          <p>No comments yet.</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+{% endblock content %}

@@ -1,0 +1,172 @@
+{% extends 'core/base.html' %} 
+{% block title %} XLink | User Profile {% endblock title %} 
+{% load static %} 
+{% block content %}
+<div class="container mt-4">
+  <div class="container mt-4">
+    <div class="row justify-content-center">
+      <div class="col-md-8">
+        <div class="card text-center">
+          <div class="card-header bg-transparent"> 
+          <div class="card-body position-relative">
+            <img src="{% if users.profile_image %}{{ users.profile_image.url }}{% else %}{% static 'images/default_profile.jpg' %}{% endif %}"
+            alt="{{ users.username }}'s profile image"
+            class="rounded-circle profile-img border border-white img-fluid"
+            style="width: 200px; height: 200px;"/>
+  
+            <h5 class="card-title mt-3">
+              {{ users.first_name|title }} {{ users.last_name|title }}
+            </h5>
+            <small>@{{ users.username }}</small><br />
+            <small>{{ users.bio }}</small><br />
+  
+            <div class="d-flex flex-row justify-content-center mt-3">
+              <div class="me-4">
+                <strong>{{ followers_count }}</strong> Followers
+              </div>
+              <div>
+                <strong>{{ following_count }}</strong> Following
+              </div>
+            </div>
+  
+            <div class="mt-3">
+              {% if users == request.user %}
+                <a href="{% url 'edit-profile' %}" class="btn btn-primary">Edit Profile</a>
+              {% else %}
+                {% if is_following %}
+                  <form action="{% url 'unfollow' username=users.username %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-warning">Unfollow</button>
+                  </form>
+                  <span class="ms-2 btn btn-dark">Following</span>
+                {% else %}
+                  <form action="{% url 'follow' username=users.username %}" method="post" class="d-inline">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-warning">Follow</button>
+                  </form>
+                {% endif %}
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+  <div class="col-md-8 mt-4">
+    <h1>Posts</h1>
+    {% for post in posts %}
+      <div class="card mb-4">
+        <!-- Post Header -->
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <!-- User Info -->
+          <div>
+            {% if post.user.profile_image %}
+              <img
+                src="{{ post.user.profile_image.url }}"
+                width="50"
+                height="50"
+                class="rounded-circle"
+              />
+            {% else %}
+              <img
+                src="{% static 'images/default_profile.jpg' %}"
+                width="50"
+                height="50"
+                class="rounded-circle"
+              />
+            {% endif %}
+            {% if post.user.first_name or post.user.last_name %}
+            <a href="#" class="fw-bolder text-decoration-none text-dark">
+              {{ post.user.get_full_name|title }}
+            </a>
+            {% else %}
+            {{ post.user.username|title }}
+            {% endif %}
+            <small>Posted {{ post.date_posted | timesince }} ago</small>
+          </div>
+
+          <!-- Dropdown Menu for Post Options -->
+          {% if post.user == request.user %}
+          <div class="dropdown">
+            <button class="btn btn-link" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                <li><a class="dropdown-item" href="{% url 'edit-post' post.user.username post.id %}">Edit Post</a></li>
+                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#deletePostModal">Delete Post</a></li>
+            </ul>
+        </div>
+        <div class="modal" tabindex="-1" role="dialog" id="deletePostModal">
+          <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title">Confirm Deletion</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <p>Are you sure you want to delete this post?</p>
+                  </div>
+                  <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                      <a class="btn btn-danger" href="{% url 'delete-post' post.id %}">Delete</a>
+                  </div>
+              </div>
+          </div>
+      </div>
+          {% endif %}
+        </div>
+
+        <!-- Post Body -->
+        <div class="card-body">
+          <h5 class="card-title">{{ post.caption }}</h5>
+          {% if post.image %}
+            <a href="{% url 'post-details' post.id %}" style="display: block; width: auto; height: 470px; overflow: hidden;">
+              <img src="{{ post.image.url }}" style="width: 100%; height: 100%; object-fit: cover;" class="card-img-top" alt="Social Media Post Image" />
+            </a>
+          {% endif %}
+        </div>
+        <div class="card-body">
+          <!-- Like and Comment Icons -->
+          <a href="{% url 'like' post.id %}" class="text-decoration-none">
+            {% if user in post.likes.all %}
+              <i class="fas fa-heart fa-2x text-dark"></i>
+            {% else %}
+              <i class="far fa-heart fa-2x text-dark"></i>
+            {% endif %}
+          </a>
+          <a class="mx-5 text-dark" onclick="toggleCommentSection('{{ post.id }}')" style="cursor: pointer;">
+            <i class="far fa-comment-dots fa-2x"></i>
+          </a>
+          <br>
+          <!-- Likes and Comments Counts -->
+          <small>{{ post.no_of_likes }} Likes</small>
+          <a href="{% url 'post-details' post.id %}" class="text-decoration-none text-dark">
+            <small class="m-3">{{ post.no_of_comments }} Comments </small>
+          </a>
+        </div>
+
+        <!-- Comment Form -->
+        <form id="commentForm{{ post.id }}" method="post" action="{% url 'comment' post.id %}" style="display: none;">
+          {% csrf_token %}
+          <div class="input-group mb-3">
+            <input type="text" class="form-control rounded-pill m-2" placeholder="Add a comment..." name="comment">
+            <button class="btn btn-outline-primary rounded-pill m-2" type="submit">Post</button>
+          </div>
+        </form>
+      </div>
+    {% empty %}
+      <p>No posts available.</p>
+    {% endfor %}
+  </div>
+</div>  
+</div>
+
+</div>
+<script>
+function toggleCommentSection(postId) {
+  const commentForm = document.getElementById('commentForm' + postId);
+  commentForm.style.display = commentForm.style.display === 'none' ? 'block' : 'none';
+}
+</script>
+{% endblock content %}
