@@ -57,9 +57,9 @@ EMAIL_HOST=localhost
 EMAIL_PORT=1025
 DEFAULT_FROM_EMAIL=Xlink@corp-email.com
 ```
-3. Install project dependencies: `pip install -r requirements.txt`
-4. Install Maildev using: `npm install maildev`
-5. Start Maildev with: `maildev`
-6. Access the Maildev interface in your browser at: [http://0.0.0.0:1080/](http://0.0.0.0:1080/)
+4. Install project dependencies: `pip install -r requirements.txt`
+5. Install Maildev using: `npm install maildev`
+6. Start Maildev with: `maildev`
+7. Access the Maildev interface in your browser at: [http://0.0.0.0:1080/](http://0.0.0.0:1080/)
 
 Make sure to perform these steps before testing the project, as Maildev is used to send emails for verifying users. This ensures the confirmation of user identities and activation after registration.
