@@ -42,6 +42,21 @@ The Simple Social Media Web App is a Django-based web application designed for i
 ## Maildev Configuration:
 1. Clone project: `git clone https://github.com/shyambista123/django-social-media-project.git`
 2. Navigate to the project directory: `cd django-social-media-project`
+3. Create .env file and define following
+```bash
+SECRET_KEY=django-insecure-_3cr(x3u7i(ewh+_6$s9w3d0k5ehm7&l-@08wy$%66q(b9voke
+
+DB_NAME=your database_name
+DB_USER=your username
+DB_PASSWORD=your password
+DB_HOST=localhost
+DB_PORT=5432
+
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+EMAIL_HOST=localhost
+EMAIL_PORT=1025
+DEFAULT_FROM_EMAIL=Xlink@corp-email.com
+```
 3. Install project dependencies: `pip install -r requirements.txt`
 4. Install Maildev using: `npm install maildev`
 5. Start Maildev with: `maildev`
