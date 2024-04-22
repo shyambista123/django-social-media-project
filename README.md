@@ -44,7 +44,7 @@ The Simple Social Media Web App is a Django-based web application designed for i
 2. Navigate to the project directory: `cd django-social-media-project`
 3. Create .env file and define following
 ```bash
-SECRET_KEY=django-insecure-_3cr(x3u7i(ewh+_6$s9w3d0k5ehm7&l-@08wy$%66q(b9voke
+SECRET_KEY=any-secrect-key
 
 DB_NAME=your database_name
 DB_USER=your username
