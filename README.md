@@ -58,7 +58,7 @@ EMAIL_PORT=1025
 DEFAULT_FROM_EMAIL=Xlink@corp-email.com
 ```
 4. Install project dependencies: `pip install -r requirements.txt`
-5. Install Maildev using: `npm install maildev`
+5. Install Maildev using: `npm install -g maildev`
 6. Start Maildev with: `maildev`
 7. Access the Maildev interface in your browser at: [http://0.0.0.0:1080/](http://0.0.0.0:1080/)
 
